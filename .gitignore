@@ -1,0 +1,11 @@
+*.vsidx
+*.wsuo
+*.db
+*.json
+*.ipch
+*.suo
+*.sqlite
+*.sln
+*.db-*
+*.vcxproj*
+*.opendb
