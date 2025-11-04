@@ -11,7 +11,6 @@
 #include<iostream>
 #include<string>
 #include<vector>
-#include <unordered_map>
 
 class Schedule {
 	int year;
