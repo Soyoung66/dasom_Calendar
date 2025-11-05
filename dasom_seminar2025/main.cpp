@@ -36,7 +36,7 @@ public:
 		items.push_back(t);
 
 		for (int i = 0; i < items.size() - 1; i++) {
-			for (int j = i + 1; i < items.size(); j++) {
+			for (int j = i + 1; j < (int)items.size(); j++) {
 				string t1 = items[i].time.empty() ? "99:99" : items[i].time;
 				string t2 = items[j].time.empty() ? "99:99" : items[j].time;
 				if (t1 > t2) swap(items[i], items[j]);
@@ -53,11 +53,11 @@ public:
 		for (int i = 0; i < (int)items.size(); ++i) {
 			const auto& t = items[i];
 			if (t.time.empty()) cout << i + 1 << " )";
-			else cout << i + 1 << ") [ " << t.time << " ]";
-			cout << t.title << " { " << t.category << " }\n";
-			if (!t.place.empty())  cout << "   - 장소: " << t.place << "\n";
-			if (!t.repeat.empty()) cout << "   - 반복: " << t.repeat << "\n";
-			if (!t.body.empty())   cout << "   - 내용: " << t.body << "\n";
+			else cout << i + 1 << ") [" << t.time << "]";
+			cout << " " << t.title << " { " << t.category << " }\n";
+			if (!t.place.empty())  cout << "   - 장소 : " << t.place << "\n";
+			if (!t.repeat.empty()) cout << "   - 반복 : " << t.repeat << "\n";
+			if (!t.body.empty())   cout << "   - 내용 : " << t.body << "\n";
 		}
 	}
 
@@ -99,6 +99,7 @@ public:
 		cout << "장소: ";    getline(cin, t.place);
 		cout << "반복: ";    getline(cin, t.repeat);
 		cout << "분류: ";    getline(cin, t.category);
+		cout << endl;
 	
 		int idx = findDayIndex(y,m,d);
 		if (idx == -1) {
@@ -107,6 +108,7 @@ public:
 		}
 		days[idx].add(t);
 		days[idx].print();
+		cout << "\n\n";
 	}
 
 	void view() const {
@@ -114,7 +116,7 @@ public:
 		cout << "열람할 날짜를 적어주세요 (년도 월 일) : ";
 		cin >> y >> m >> d;
 		cin.ignore();
-
+		cout << endl;
 		int idx = findDayIndex(y, m, d);
 		if (idx == -1)cout << "\n\n\n";
 		else { days[idx].print(); cout << "\n\n"; }
@@ -125,12 +127,12 @@ public:
 		cout << "삭제할 날짜를 적어주세요 (년도 월 일) : ";
 		cin >> y >> m >> d;
 		cin.ignore();
-
+		cout << endl;
 		int idx = findDayIndex(y, m, d);
-		days[idx].print();
 		if (idx == -1) { cout << "삭제할 일정이 없습니다.\n\n"; return; }
 		else {
-			cout << "삭제할 번호 : ";
+			days[idx].print();
+			cout << "\n삭제할 번호 : ";
 			int k; cin >> k; cin.ignore();
 			if (days[idx].removeIdx(k)) { days[idx].print(); cout << "\n\n"; }
 			else cout << "번호가 올바르지 않습니다.\n\n";
@@ -145,7 +147,7 @@ public:
 		for (const auto& d: days) {
 			d.searchkey(key);
 		}
-		cout << "\n";
+		cout << "\n\n";
 	}
 
 	void mainscreen() {
@@ -154,6 +156,7 @@ public:
 			cout << "원하는 서비스를 선택하세요." << endl;
 			cout << "1.일정 열람  2. 일정 추가  3. 일정 제거  4. 일정 검색  5. 중단" << endl;
 			cin >> number;
+			cout << endl;
 			if (number == 1) view();
 			else if (number == 2) add();
 			else if (number == 3) del();
