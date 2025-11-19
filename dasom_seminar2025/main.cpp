@@ -25,13 +25,15 @@ struct Todo {
 
 class Day {
 	int year, month, day;
-	vector<Todo>items;
+	vector<Todo>items;   //Todo의 객체
 public:
 	Day(int y, int m, int d) : year(y),month(m),day(d){}
 	
+	// 같은 날인지 확인
 	bool sameDate(int y, int m, int d) const {
 		return year == y && month == m && day == d;
 	}
+	// 일정 추가, 시간을 쓰지 않을 때를 구분, 시간순으로 정렬
 	void add(const Todo& t) {
 		items.push_back(t);
 
@@ -43,11 +45,14 @@ public:
 			}
 		}
 	}
+	// items 벡터에서 해당하는 인덱스의 일정 삭제, 리턴값은 bool
+	// 파라미터로 받은 번호가 1 이상, 크기 이하인지 확인
 	bool removeIdx(int idx) {
 		if (idx<1 || idx>(int)items.size()) return false;
 		items.erase(items.begin() + (idx - 1));
 		return true;
 	}
+	// 일정 출력
 	void print() const {
 		cout << "===== " << year << "년 " << month << "월 " << day << "일" << " =====\n";
 		for (int i = 0; i < (int)items.size(); ++i) {
@@ -60,7 +65,7 @@ public:
 			if (!t.body.empty())   cout << "   - 내용 : " << t.body << "\n";
 		}
 	}
-
+	// 키워드 컴색. items에 있는 모든 제목과 본문,장소에서 키워드 find
 	void searchkey(const string& key) const {
 		for (const auto& t : items) {
 			string blob = t.title + " " + t.body + " " + t.place;
@@ -68,7 +73,7 @@ public:
 				if (t.time.empty())
 					cout << year << "년 " << month << "월 " << day << "일 " << t.title << " { " << t.category << " }\n";
 				else
-					cout << year << "년 " << month << "월 " << day << "일 " << " [ " << t.time << " ] " << t.title << " { " << t.category << " }\n";
+					cout << year << "년 " << month << "월 " << day << "일 " << " [" << t.time << "] " << t.title << " { " << t.category << " }\n";
 			}
 		}
 	}
@@ -78,6 +83,8 @@ public:
 class Calendar {
 	vector<Day> days;
 
+	// 년,월,일을 파라미터로 입력하면 days 벡터에서 해당 날짜의 인덱스를 리턴
+	// 왜냐하면 아래에서 일정을 찾을 때 이 함수를 통해 인덱스로 접근할것이기 때문
 	int findDayIndex(int y, int m, int d) const {
 		for (int i = 0; i < (int)days.size(); ++i)
 			if (days[i].sameDate(y,m,d)) return i;
@@ -85,15 +92,16 @@ class Calendar {
 	} 
 
 public:
+	// 일정 추가
 	void add() {
 		int y, m, d;
 		cout << "추가하고 싶은 날짜를 적어주세요 (년도 월 일) : ";
 		cin >> y >> m >> d;
 		cin.ignore();
 
-		Todo t;
+		Todo t;     // struct 객체 생성, 즉 일정 생성
 		cout << "시간 (HH:MM, 없으면 엔터) : ";
-		getline(cin, t.time);
+		getline(cin, t.time);   // 띄어쓰기도 인식되게끔
 		cout << "제목: ";    getline(cin, t.title);
 		cout << "본문: ";    getline(cin, t.body);
 		cout << "장소: ";    getline(cin, t.place);
@@ -101,16 +109,16 @@ public:
 		cout << "분류: ";    getline(cin, t.category);
 		cout << endl;
 	
-		int idx = findDayIndex(y,m,d);
+		int idx = findDayIndex(y,m,d);  // days 벡터에서 해당 날짜(요소) 인덱스 찾기
 		if (idx == -1) {
-			days.emplace_back(y, m, d);
+			days.emplace_back(y, m, d);  //함수 내에서 객체를 생성해 삽입 =push_back
 			idx = (int)days.size() - 1;
 		}
 		days[idx].add(t);
 		days[idx].print();
 		cout << "\n\n";
 	}
-
+	// 일정 열람
 	void view() const {
 		int y, m, d;
 		cout << "열람할 날짜를 적어주세요 (년도 월 일) : ";
@@ -118,10 +126,10 @@ public:
 		cin.ignore();
 		cout << endl;
 		int idx = findDayIndex(y, m, d);
-		if (idx == -1)cout << "\n\n\n";
+		if (idx == -1)cout << "\n\n\n";   //일정이 없으면 빈 화면이 뜸
 		else { days[idx].print(); cout << "\n\n"; }
 	}
-
+	// 일정 제거
 	void del() {
 		int y, m, d;
 		cout << "삭제할 날짜를 적어주세요 (년도 월 일) : ";
@@ -135,17 +143,17 @@ public:
 			cout << "\n삭제할 번호 : ";
 			int k; cin >> k; cin.ignore();
 			if (days[idx].removeIdx(k)) { days[idx].print(); cout << "\n\n"; }
-			else cout << "번호가 올바르지 않습니다.\n\n";
+			else cout << "번호가 올바르지 않습니다.\n\n";   // Day class 함수 사용
 		}
 	}
-
+	//일정 검색
 	void search()const {
 		cout << "검색어 : ";
 		string key; cin.ignore(); getline(cin, key);
 		cout << "\n===== 검색결과 =====\n";
 		bool result = false;
 		for (const auto& d: days) {
-			d.searchkey(key);
+			d.searchkey(key);   //일정 찾기, 존재하면 년월일 및 일정 내용 출력
 		}
 		cout << "\n\n";
 	}
