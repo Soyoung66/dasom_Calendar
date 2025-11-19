@@ -12,6 +12,7 @@
 #include<string>
 #include<vector>
 #include<algorithm>
+#include<iomanip>
 using namespace std;
 
 struct Todo {
@@ -98,7 +99,7 @@ public:
 		cout << "추가하고 싶은 날짜를 적어주세요 (년도 월 일) : ";
 		cin >> y >> m >> d;
 		cin.ignore();
-
+		printMonth(y, m);
 		Todo t;     // struct 객체 생성, 즉 일정 생성
 		cout << "시간 (HH:MM, 없으면 엔터) : ";
 		getline(cin, t.time);   // 띄어쓰기도 인식되게끔
@@ -119,11 +120,12 @@ public:
 		cout << "\n\n";
 	}
 	// 일정 열람
-	void view() const {
+	void view() {
 		int y, m, d;
 		cout << "열람할 날짜를 적어주세요 (년도 월 일) : ";
 		cin >> y >> m >> d;
 		cin.ignore();
+		printMonth(y, m);
 		cout << endl;
 		int idx = findDayIndex(y, m, d);
 		if (idx == -1)cout << "\n\n\n";   //일정이 없으면 빈 화면이 뜸
@@ -157,6 +159,40 @@ public:
 		}
 		cout << "\n\n";
 	}
+
+	// 달력모양 만들기
+	bool isLeapYear(int year) {
+		return year % 4 == 0 and year % 100 != 0 or year % 400 == 0;
+	}
+	int lastDay(int y, int m) {
+		int month[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+		month[1] = isLeapYear(y) ? 29 : 28;
+		return month[m - 1];
+	}
+	int totalDay(int y, int m, int d) {
+		int sum = (y - 1) * 365 + (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400;
+		for (int i = 1; i < m; i++) 
+			sum += lastDay(y, i);
+		return sum + d;
+	}
+	int weekDay(int y, int m, int d) {
+		return totalDay(y, m, d) % 7;
+	}
+	void printMonth(int y, int m) {
+		cout << "===============================" << endl;
+		cout << "         " << setw(4) << y << "년 " << m << "월" << endl;
+		cout << "===============================" << endl;
+		cout << "  일  월  화  수  목  금  토  " << endl;
+		cout << "===============================" << endl;
+		for (int i = 0; i < weekDay(y, m, 1); i++)
+			cout << "    ";
+		for (int i = 1; i <= lastDay(y, m); i++) {
+			cout << " " << setw(2) << i << " ";
+			if (weekDay(y, m, i) == 6) cout << "\n";
+		}
+		cout << "\n===============================" << endl;
+	}
+
 
 	void mainscreen() {
 		int number;
